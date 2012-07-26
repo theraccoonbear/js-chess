@@ -44,6 +44,7 @@ var CostBenefitAI = BasicAgent.extend({
 		var cap_p = board[x2][y2];
 		var score = -10000;
 		
+		
 		if (atk_p != null) {
 			if (cap_p != null) {
 				score = this.targetValues[cap_p.type];
