@@ -636,7 +636,6 @@ var Chess = Class.extend({
 			rook.y = y;
 			this.board[rsx][y] = null;
 			this.board[rex][y] = rook;
-			// Add castling
 		}
 		
 		this.logMove(x1, y1, x2, y2, notation, elapsed, turn);
