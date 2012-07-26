@@ -1,6 +1,6 @@
 var Piece = Class.extend({
   _rep: {
-		'pawn': '',
+		'pawn': 'p',
 		'rook': 'R',
 		'knight': 'N',
 		'bishop': 'B',
@@ -16,6 +16,7 @@ var Piece = Class.extend({
 		this.init_y = yp;
 		this.unmoved = true;
 		this.rep = this._rep[this.type];
+		this.BERep = c.toLowerCase().substring(0) + this._rep[this.type];
 	},
 	moveIsValid: function(x, y, moves) {
 		for (var i = 0; i < moves.length; i++) {
