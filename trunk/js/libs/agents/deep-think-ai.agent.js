@@ -35,11 +35,11 @@ var DeepThinkAI = CostBenefitAI.extend({
 		
 		ret_val = this.color == 'white' ? white - black : black - white;
 		
-		if (ret_val != 0) {
-			console.log('SCORE: ' + ret_val);
-			console.log(board);
-			console.log('-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=');
-		}
+		//if (ret_val != 0) {
+		//	console.log('SCORE: ' + ret_val);
+		//	console.log(board);
+		//	console.log('-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=');
+		//}
 		
 		return ret_val;
 	},
@@ -127,14 +127,33 @@ var DeepThinkAI = CostBenefitAI.extend({
 		var ctxt = this;
 		this.positionsEvaluated = 0;
 		
+		this.movesMade++;
+		
 		if (this.movesMade < 10) {
 			DeepThinkAI.super.getMove.call(this, game);
 		} else {
 			var tree = this.buildEvalTree(board);
 			console.log('Positions Evaluated: ' + this.positionsEvaluated);
 			console.log(tree);
+			var hs = 0;
+			var hs_move = {
+				sx: 0,
+				sy: 0,
+				ex: 0,
+				ey: 0
+			};
+			
+			for (var i = 0; i < tree.future.length; i++) {
+				var mv = tree.future[i];
+				if (mv.state.score > hs) {
+					hs = mv.state.score;
+					hs_move = mv.move;
+				}
+			}
+			
+			game.handleMove(hs_move);
 		}
 		
-		this.movesMade++;
+		
 	}
 });
