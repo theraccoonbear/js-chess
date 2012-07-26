@@ -10,12 +10,13 @@ var Display = Class.extend({
 		
 	  this.$board = $(this.options.boardSelector);
 		this.$captured = $(this.options.captureListSelector);
+		this.$captured.html('');
 		this.$whiteCapture = $('<ul class="fleft"></ul>');
 		this.$blackCapture = $('<ul class="fleft"></ul>');
 		this.$captured.append(this.$whiteCapture);
 		this.$captured.append(this.$blackCapture);
 		this.$board.html('');
-		this.$captured.html('');
+		
 		this.dummyPiece = new PawnPiece('white','pawn',0,0);
 		this.empty = [
 		  [null,null,null,null,null,null,null,null],
