@@ -62,11 +62,11 @@
 					<div class="fleft" id="gameSetup">
 						<label for="player1">Player 1 (white)</label>
 						<select id="player1">
-							<option value="HumanAgent" selected="selected">Human</option>
+							<option value="HumanAgent">Human</option>
 							<option value="RandomAI">RandomAI</option>
 							<option value="HighValueTargetAI">HighValueTargetAI</option>
 							<option value="CostBenefitAI">CostBenefitAI</option>
-							<option value="DeepThinkAI">DeepThinkAI (EXPERIMENTAL!)</option>
+							<option value="DeepThinkAI" selected="selected">DeepThinkAI (EXPERIMENTAL!)</option>
 						</select>
 						
 						<label for="player2">Player 2 (black)</label>
@@ -82,7 +82,7 @@
 						<p></p>
 						<label for="keepPlaying">Keep Playing <input type="checkbox" id="keepPlaying" checked="checked"></label><br>
 						<input type="submit" id="playPause" data-action="pause" value="Pause" style="display: none;"><br>
-						<label for="animateDelay">Single Square Animation Delay (ms)<input type="text" id="animateDelay" value="250"></label>
+						<label for="animateDelay">Single Square Animation Delay (ms)<input type="text" id="animateDelay" value="100"></label>
 					</div><!-- /#gameSetup -->
 				</div><!-- /#controls -->
 			</div><!-- /#allOfTheGame -->
