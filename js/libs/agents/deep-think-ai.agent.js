@@ -130,7 +130,7 @@ var DeepThinkAI = CostBenefitAI.extend({
 		this.movesMade++;
 		
 		if (this.movesMade < 10) {
-			DeepThinkAI.super.getMove.call(game);
+			DeepThinkAI.super.getMove.call(this, game);
 		} else {
 			var tree = this.buildEvalTree(board);
 			console.log('Positions Evaluated: ' + this.positionsEvaluated);
