@@ -1,0 +1,438 @@
+<!doctype html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!-- Consider adding a manifest.appcache: h5bp.com/d/Offline -->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <title>Chess</title>
+  <meta name="description" content="A Javascript chess game serving as a testbed for various AIs">
+
+  <!-- Mobile viewport optimized: h5bp.com/viewport -->
+  <meta name="viewport" content="width=device-width">
+
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
+
+  <link rel="stylesheet" href="css/style.css">
+	
+	<link type="text/css" href="css/ui-lightness/jquery-ui-1.8.19.custom.css" rel="Stylesheet" />
+	<link type="text/css" href="css/jquery.snippet.min.css" rel="Stylesheet" />
+	
+	<!-- Uncomment for Kalendae -->
+	<!-- <link rel="stylesheet" href="css/kalendae.css"> -->
+  <!-- More ideas for your <head> here: h5bp.com/d/head-Tips -->
+
+  <!-- All JavaScript at the bottom, except this Modernizr build.
+       Modernizr enables HTML5 elements & feature detects for optimal performance.
+       Create your own custom Modernizr build: www.modernizr.com/download/ -->
+  <script src="js/libs/modernizr-2.5.3.min.js"></script>
+</head>
+<body>
+  <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you support IE 6.
+       chromium.org/developers/how-tos/chrome-frame-getting-started -->
+  <!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
+  
+	
+	<header>
+	</header>
+	
+	
+	
+  <div role="main" id="tabs">
+		<ul id="tabPicker">
+			<li><a href="#game-tab">The Game</a></li>
+			<li><a href="#about-tab">About</a></li>
+			<li><a href="#ai-tab">The AIs</a></li>
+		</ul><!-- /#tabPicker -->
+		
+		<div id="game-tab">
+			<div id="allOfTheGame">
+				<div id="board" class="fleft"></div><!-- /#board -->
+				<div id="captured" class="fleft">
+					<h1>Captured</h1>
+					<div id="captureList">
+					</div><!-- /#captureList -->
+				</div><!-- /#captured -->
+				<div class="clearfix"></div>
+				
+				<div id="controls" class="fleft">
+					<div class="fleft" id="gameSetup">
+						<label for="player1">Player 1 (white)</label>
+						<select id="player1">
+							<option value="HumanAgent">Human</option>
+							<option value="RandomAI">RandomAI</option>
+							<option value="HighValueTargetAI">HighValueTargetAI</option>
+							<option value="CostBenefitAI" selected="selected">CostBenefitAI</option>
+						</select>
+						
+						<label for="player2">Player 2 (black)</label>
+						<select id="player2">
+							<option value="HumanAgent">Human</option>
+							<option value="RandomAI">RandomAI</option>
+							<option value="HighValueTargetAI">HighValueTargetAI</option>
+							<option value="CostBenefitAI" selected="selected">CostBenefitAI</option>
+						</select>
+						
+						<input type="submit" id="newGame" value="Start Game">
+						<p></p>
+						<label for="keepPlaying">Keep Playing <input type="checkbox" id="keepPlaying" checked="checked"></label><br>
+						<input type="submit" id="playPause" data-action="pause" value="Pause" style="display: none;"><br>
+						<label for="animateDelay">Single Square Animation Delay (ms)<input type="text" id="animateDelay" value="250"></label>
+					</div><!-- /#gameSetup -->
+				</div><!-- /#controls -->
+			</div><!-- /#allOfTheGame -->
+		</div><!-- /#game-tab -->
+		
+		<div id="about-tab">
+			<h2>What is this page?</h2>
+			
+			<p>This is an application created by me to both work on Javascript skills and to work on a challening problem I've long wanted to tackle: chess AI.</p>
+			
+			<h2>So, it's a chess game?</h2>
+			
+			<p>
+				Yes, it is a chess game, and should currently follow standard chess rules, including, most recently, support for castling and en passant attacks.
+			  But more than just being a game, it's a playpen for me to create and test AIs.
+			</p>
+			
+			<h2>Aren't there already a lot of chess games out there?</h2>
+			
+			<p>
+				Absolutely, and many of them are both better playing and better implemented than mine, but the point was not to create the most efficient or
+				most compelling chess experience.
+			</p>
+			
+			<h2>So, what is the point?</h2>
+			
+			<p>
+				It's actually twofold: to implement a chess engine, and to create easily swappable "agents" which can play chess, including the possibility for others
+				to create and test their own agents.  Currently there's a human controlled agent as well as a few primitive AIs.
+			</p>
+			
+			<h2>So, I can play against the computer?</h2>
+			
+			<p>
+				Yes, you can play against any of the AIs, or play against yourself or a friend by using two human agents.	
+			</p>
+			
+			<h2>Can I play with a friend over the internet?</h2>
+			
+			<p>
+				Not yet, but I would like to add support for this at some point.
+			</p>
+			
+			<h2>How good are the AI players?</h2>
+			
+			<p>
+				Honestly, they're not very good right now, but this is an iterative process as I learn more about the field of chess AIs and experiment with
+			  different ideas I have.  I've been told by those who've been helping me test the game that while the current AIs ultimately become predictable,
+				their sometimes erratic behavior can confuse human players.
+			</p>
+			
+			<h2>Are you a good chess player yourself?</h2>
+			
+			<p>
+				I'd like to say I am, but I'm not.  I know the rules of chess and I've played it over the years, but I'm neither especially into chess nor
+				am I a skilled player.  Chess just provides a well established arena for AI development where I can, in theory, pit my AIs against others, as well
+				as against the large number of people who know how to play chess.
+			</p>
+			
+			<h2>How do the AIs work?</h2>
+			
+			<p>
+				Check out the AIs tab above for more details on the different agents.
+			</p>
+		</div><!-- /#about-tab -->
+		
+		<div id="ai-tab">
+			<h2>The AIs</h2>
+			
+			<p>Each of the AIs is documented below (as I have time and as their strategies become more concrete).  If you're interested in writing your own AI, please see the section below on writing AIs.</p>
+			
+			<h3>RandomAI</h3>
+			
+			<p>
+				RandomAI does basically what its name says.  The AI will look at all of its available pieces and will select one at random.  It will then look at all of the legal
+				moves that piece can make and will select one of those at random, prefering captures to not capturing moves.  This is a very na&iuml;ve AI and was the first I wrote to
+				get up and running very quickly.  This AI presents no real challenge whatsoever.
+			</p>
+
+			<h3>HighValueTargetAI</h3>
+			
+			<p>
+				This AI looks at all of its pieces, and then all of the moves its pieces can make.  It prefers captures to non-capturing moves and will capture the highest value piece
+				it can, using the lowest value piece it can&mdash;the thinking being that it will potentially be exposing a less valuable piece to future attack.  This AI can be bated
+				fairly easily by enticing its queen to attack a pawn with another piece in position to subsequently capture the queen.  This AI is slightly more aggressive than RandomAI
+				but does not play defensively.
+			</p>
+			
+			<h3>CostBenefitAI</h3>
+			
+			<p>
+				The CostBenefitAI follows a similar strategy to the HighValueTarget, but it will look ahead and see if the piece it would use to capture could then be captured by the opponent
+				and whether its an acceptable tradeoff (e.g. it will likely be willing to lose a pawn to capture a queen, but not the inverse). This is the biggest distinction and makes it
+				a little harder to lure into a trap.  It otherwise doesn't play defensively.  This AI also includes an "<a href="http://en.wikipedia.org/wiki/Chess_endgame" target="_blank">endgame</a>"
+				strategy which is triggered when only the opponents king remains (which is not really the definition of endgame).  This strategy is still being actively developed.
+			</p>
+			
+			<hr/>
+			
+			<h2>Writing Your Own AIs</h2>
+			
+			<p>
+				Chess AIs are classes, created using <a href="https://github.com/rauschma/class-js" target="_blank">Class.js</a> by extending the <code class="js">BasicAgent</code> class, or another AI class
+				extended from that.  The <code class="js">BasicAgent</code> class provides some helper functions that can be explored by looking at its <a href="js/libs/agents/basic.agent.js" target="_blank">source code</a>.
+				Your AI class only needs to implement one method, <code class="js">getMove(game)</code>, to be functional.  It can optionally define a constructor method if your code needs to do any initialization.
+				The <code class="js">getMove</code> method is passed a single argument, which is the chess game object.  You can view the <a href="js/libs/chess.js" target="_blank">source</a> for the game
+				object to see what methods and properties it exposes.  The things that will primarily interest you are its <code class="js">board</code> property (a two dimensional array of the board's pieces),
+				the <code class="js">movesFor(x, y)</code> method that will return an object with all of the valid moves/captures for the piece located at the given coordinates, the <code class="js">testMove(board, x1, y1, x2, y2)</code>
+				method which will return a copy of the supplied board representing its state following a move defined by the supplied coordinates, and the <code class="js">checkThreats(board)</code> method which
+				will return an object indicating which pieces are threatened and by whom for the supplied board.
+			</p>
+			
+			<p>
+				Your <code class="js">getMove</code> method must end by using a callback to the game object.  While returning a value seems like an intuitive thing to do, the asynchronous needs of a human player agent
+				necessitate that we be able to wait for a move to be supplied.  To execute a move, you must call <code class="js">game.handleMove(move)</code>.  The move object you supply is either:
+			</p>
+			
+			<ol>
+				<li>A set of start and end coordinates represented as:<br/>
+				  <pre class="code js" style="height: 400px; overflow-y: scroll;">
+var move = {
+	sx: 1,
+	sy: 1,
+	ex: 2,
+	ey: 2
+}
+					</pre>
+				</li>
+				<li>The string "resign" (without quotes) which will end the game.</li>
+			</ol>
+			
+			<p>
+				Here's the logic contained in the RandomAI's getMove method, to give you a sense of what's involved:
+				
+				<pre class="code js">
+getMove: function(game) {
+	this.game = game;
+	var start = new Date();
+	var elap = new Date() - start
+	var board = game.board;
+	var my_pieces = [];
+	var ctxt = this;
+	
+	for (var x = 0; x < 8; x++) {
+		for (var y = 0; y < 8; y++) {
+			var piece = board[x][y];
+			if (piece != null && piece.color == this.color) {
+				my_pieces.push(piece);
+			}
+		}
+	}
+
+	var the_move = {
+		sx: null,
+		sy: null,
+		ex: null,
+		ey: null
+	};
+	var ready = false;
+	var safety_cnt = 0;
+
+	var to_play = this.atRandom(my_pieces);
+	var now = new Date();
+	while (!ready && now - start < 1000) { // ready or 1 second without a decision
+		safety_cnt++;
+		the_move.sx = to_play.x;
+		the_move.sy = to_play.y;
+		
+		var moves = game.movesFor(to_play.x, to_play.y);
+		if (moves.capture.length > 0) {
+			var m = this.atRandom(moves.capture);
+			the_move.ex = m[0];
+			the_move.ey = m[1];
+			ready = true;
+		} else if (moves.move.length > 0) {
+			var m = this.atRandom(moves.move);
+			the_move.ex = m[0];
+			the_move.ey = m[1];
+			ready = true;
+		} else {
+			to_play = this.atRandom(my_pieces);
+		}
+		now = new Date();
+	}
+	
+	game.handleMove(the_move);
+}
+				</pre>
+			</p>
+			
+			<p>
+				Currently there's no automated way for you to test your AI, so if you'd like it included, you'll need to have it hosted on a server somewhere at which point you can
+				give me a link to it so I can include it in the AIs list.  Please <a href="mailto:chess.ai@hooray.33mail.com">email me</a> if you would like this setup or if you have
+				any questions.
+			</p>
+			
+		</div><!-- /#ai-tab -->
+		
+		
+	</div><!-- /#tabs -->
+  
+	<footer>
+
+  </footer>
+
+
+  <!-- JavaScript at the bottom for fast page loading -->
+
+  <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')</script>
+	<!-- scripts concatenated and minified via build script -->
+	
+	<script src="js/jquery-ui-1.8.19.custom.min.js"></script>
+	<script src="js/libs/jquery.snippet.min.js"></script>
+	
+  <script src="js/plugins.js"></script>
+	<script src="js/libs/Class.js"></script>
+	<script src="js/libs/chess.js"></script>
+	<script src="js/libs/chess.pieces.js"></script>
+	<script src="js/libs/chess.display.js"></script>
+	
+	<script src="js/libs/agents/basic.agent.js"></script>
+	<script src="js/libs/agents/human.agent.js"></script>
+	<script src="js/libs/agents/random-ai.agent.js"></script>
+	<script src="js/libs/agents/high-value-target-ai.agent.js"></script>
+	<script src="js/libs/agents/cost-benefit-ai.agent.js"></script>
+	
+	<script type="text/javascript">
+		var game;
+		var disp;
+		var p1;
+		var p2;
+		
+		var display_options = {
+			boardSelector: '#board',
+			captureListSelector: '#captureList',
+			animateDelay: parseInt($('#animateDelay').val())
+		};
+		
+		disp = new Display(display_options);
+		disp.displayBoard();
+		
+		var scenario = [
+		  [null,null,null,null,null,null,'wk',null],
+			[null,null,null,null,null,null,null,null],
+			[null,null,null,'bq',null,null,null,null],
+			[null,null,null,null,null,null,null,null],
+			[null,null,null,null,null,null,null,null],
+			[null,null,null,null,null,null,null,null],
+			[null,null,null,null,null,null,null,null],
+			['bk',null,null,null,null,null,null,null]
+		];
+		
+		var nextGame = function(e) {
+			var p1type = $('#player1').val();
+			var p2type = $('#player2').val();
+			
+			p1 = new window[p1type]('white');
+			p2 = new window[p2type]('black');
+			
+			display_options = {
+				boardSelector: '#board',
+				captureListSelector: '#captureList',
+				animateDelay: parseInt($('#animateDelay').val())
+			};
+			
+			disp = new Display(display_options);
+			
+			var game_options = {
+				player1: p1,
+				player2: p2,
+				display: disp
+			};
+			
+			$('#playPause').data('action', 'pause').attr('value', 'Pause').show();
+			game = new Chess(game_options);
+			//game.createScenario(scenario);
+			game.start(gameOver);
+			
+			if (e) { e.preventDefault(); }
+		};
+		
+		$(function() {
+			$('#newGame').click(nextGame);
+			
+			$('#playPause').click(function(e) {
+				var $but = $(this);
+				var act = $but.data('action');
+				if (act == 'play') {
+					$but.data('action', 'pause').attr('value', 'Pause');
+					game.playGame();
+				} else {
+					$but.data('action', 'play').attr('value', 'Play');
+					game.pauseGame();
+				}
+				e.preventDefault();
+			});
+			
+			$( "#tabs" ).tabs();
+			
+			$("pre.js").snippet("javascript",{style:"vampire",transparent:false,showNum:true});
+		});
+		
+		
+		var wins = {
+			'black': 0,
+			'white': 0,
+			'draw': 0
+		};
+		
+		var gameOver = function(game, winner) {
+			wins[winner]++;
+			
+			var msg = '';
+			if (winner == 'draw') {
+				msg = 'Draw';	
+			} else {
+				msg = 'Player ' + (winner == 'white' ? '2, ' + p1.agentName : '1, ' + p2.agentName) + ' (' + winner + ') wins';
+			}
+			
+			if (console) { console.log(msg); }
+			
+			
+			if ($('#keepPlaying').is(':checked')) {
+				nextGame();
+			}
+			
+			//console.log('Black: ' + wins.black + ' (' + Math.floor((wins.black / (wins.black + wins.white)) * 100) + '%), White: ' + wins.white + ' (' + Math.floor((wins.white / (wins.black + wins.white)) * 100) + '%)');
+			//runGame();
+		};
+		
+	</script>
+	
+	<!-- Uncomment for jQuery UI -->
+  <!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>-->
+  
+	<!-- Uncomment for Kalendae -->
+	<!--<script src="js/libs/kalendae.min.js" type="text/javascript" charset="utf-8"></script>-->
+	
+	<!-- Uncomment for dateFormat -->
+	<!--<script src="js/libs/dateFormat.js" type="text/javascript"></script>-->
+	
+  <!-- end scripts -->
+
+  <!-- Asynchronous Google Analytics snippet. Change UA-XXXXX-X to be your site's ID.
+       mathiasbynens.be/notes/async-analytics-snippet -->
+  <script>
+    var _gaq=[['_setAccount','UA-15804777-1'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+  </script>
+</body>
+</html>
