@@ -89,7 +89,7 @@ var DeepThinkAI = CostBenefitAI.extend({
 				
 				this.positionsEvaluated++;
 				if (this.positionsEvaluated > this.lastNotice + 1000) {
-					console.log(this.positionsEvaluated + '...');
+					console.log('(' + this.callDepth + ') ' + this.positionsEvaluated + '...');
 					this.lastNotice = this.positionsEvaluated;
 				}
 				
