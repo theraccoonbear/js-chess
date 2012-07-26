@@ -716,11 +716,10 @@ var Chess = Class.extend({
 		this.moveRequestedAt = new Date();
 		
 		if (this.active == this.WHITE) {
-			this.white_player.getMove(this, this.handleMove);
+			this.white_player.getMove(this);
 		} else {
-			this.black_player.getMove(this, this.handleMove);
+			this.black_player.getMove(this);
 		}
-		this.active = this.active == this.WHITE ? this.BLACK : this.WHITE;
 	},
 	handleMove: function(move) {
 		var ctxt = this;
@@ -732,5 +731,8 @@ var Chess = Class.extend({
 		} else {
 			this.move(move.sx, move.sy, move.ex, move.ey);
 		}
+		
+		this.active = this.active == this.WHITE ? this.BLACK : this.WHITE;
+		
 	}
 }); // Chess
