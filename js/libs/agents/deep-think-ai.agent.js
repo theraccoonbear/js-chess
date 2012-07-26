@@ -65,8 +65,8 @@ var DeepThinkAI = BasicAgent.extend({
 			var captures = m_obj.moves.capture;
 			var piece_moves = moves.concat(captures);
 			
-			for (var l = 0; l < all_piece_moves.length; l++) {
-				var m = all_piece_moves[l];
+			for (var l = 0; l < piece_moves.length; l++) {
+				var m = piece_moves[l];
 				
 				var a_move = {
 					sx: piece.x,
