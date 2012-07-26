@@ -88,6 +88,10 @@ var DeepThinkAI = CostBenefitAI.extend({
 				};
 				
 				this.positionsEvaluated++;
+				if (this.positionsEvaluated > this.updatedAt + 1000) {
+					console.log(this.positionsEvaluated + '...');
+					this.updatedAt = this.positionsEvaluated;
+				}
 				
 				var new_board = this.game.testMove(board, piece.x, piece.y, m[0], m[1]);
 				
@@ -126,6 +130,7 @@ var DeepThinkAI = CostBenefitAI.extend({
 		var my_pieces = [];
 		var ctxt = this;
 		this.positionsEvaluated = 0;
+		this.lastNotice = 0;
 		
 		this.movesMade++;
 		
