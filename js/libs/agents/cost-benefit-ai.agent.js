@@ -8,7 +8,7 @@ var CostBenefitAI = BasicAgent.extend({
 		'pawn': 2
 	},
 	constructor: function(color) {
-		HighValueTargetAI.super.constructor.call(this, color);
+		CostBenefitAI.super.constructor.call(this, color);
 		this.agentName = "CostBenefitAI";
 		this.callDepth = 0;
 	},
