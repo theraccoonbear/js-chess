@@ -107,7 +107,7 @@ var DeepThinkAI = CostBenefitAI.extend({
 		if (this.callDepth < this.maxDepth) {
 			// Get the average
 			var sum = 0;
-			for (var i = 0; i <= moveTree.future.length; i++) {
+			for (var i = 0; i < moveTree.future.length; i++) {
 				var mt = moveTree.future[i].state;
 				sum += mt.score;
 			}
