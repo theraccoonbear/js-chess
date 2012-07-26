@@ -6,12 +6,9 @@ var BackendAgent = BasicAgent.extend({
 	},
 	getMove: function(game) {
 		this.game = game;
-		var board = game.board;
 		var ctxt = this;
-		//game.handleMove('resign');
 		
-		
-		$.post(this.url, {board: board}, function(data, status, xhr) {
+		$.post(this.url, {board: game.board}, function(data, status, xhr) {
 			console.log(data);
 		});
 	}
