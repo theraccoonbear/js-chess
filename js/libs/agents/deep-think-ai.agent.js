@@ -1,4 +1,4 @@
-var DeepThinkAI = BasicAgent.extend({
+var DeepThinkAI = CostBenefitAI.extend({
 	targetValues: {
 		'king': 100,
 		'queen': 50,
@@ -12,6 +12,7 @@ var DeepThinkAI = BasicAgent.extend({
 		this.agentName = "DeepThinkAI";
 		this.callDepth = 0;
 		this.positionsEvaluated = 0;
+		this.movesMade = 0;
 	},
 	scoreBoard: function(board) {
 		var white = 0;
@@ -113,11 +114,15 @@ var DeepThinkAI = BasicAgent.extend({
 		var my_pieces = [];
 		var ctxt = this;
 		this.positionsEvaluated = 0;
-			
-		var tree = this.buildEvalTree(board);
 		
-		console.log('Positions Evaluated: ' + this.positionsEvaluated);
+		if (this.movesMade < 10) {
+			DeepThinkAI.super.getMove.call(this, game);
+		} else {
+			var tree = this.buildEvalTree(board);
+			console.log('Positions Evaluated: ' + this.positionsEvaluated);
+			console.log(tree);
+		}
 		
-		console.log(tree);
+		this.movesMade++;
 	}
 });
