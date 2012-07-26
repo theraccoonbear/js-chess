@@ -136,12 +136,7 @@ var DeepThinkAI = CostBenefitAI.extend({
 			console.log('Positions Evaluated: ' + this.positionsEvaluated);
 			console.log(tree);
 			var hs = 0;
-			var hs_move = {
-				sx: null,
-				sy: null,
-				ex: null,
-				ey: null
-			};
+			var hs_move = null;
 			
 			for (var i = 0; i < tree.future.length; i++) {
 				var mv = tree.future[i];
@@ -151,6 +146,9 @@ var DeepThinkAI = CostBenefitAI.extend({
 				}
 			}
 			
+			if (hs_move == null) {
+				hs_move = this.atRandom(tree.future).move;
+			}
 			game.handleMove(hs_move);
 		}
 		
