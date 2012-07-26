@@ -7,7 +7,7 @@ var DeepThinkAI = CostBenefitAI.extend({
 		'knight': 10,
 		'pawn': 2
 	},
-	maxDepth: 3,
+	maxDepth: 2,
 	constructor: function(color) {
 		DeepThinkAI.super.constructor.call(this, color);
 		this.agentName = "DeepThinkAI";
