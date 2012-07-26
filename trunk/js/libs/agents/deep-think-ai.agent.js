@@ -76,7 +76,12 @@ var DeepThinkAI = BasicAgent.extend({
 				var new_board = this.game.testMove(board, piece.x, piece.y, m[0], m[1]);
 				
 				if (this.callDepth < 2) {
-					moveTree.future.push(this.buildEvalTree(new_board));
+					var new_state = {
+						move: a_move,
+						state: this.buildEvalTree(new_board)
+					};
+					
+					moveTree.future.push(new_state);
 				}
 				
 			} // for all moves
@@ -94,7 +99,8 @@ var DeepThinkAI = BasicAgent.extend({
 		var my_pieces = [];
 		var ctxt = this;
 			
-		var 
+		var tree = this.buildEvalTree(board);
 		
+		console.log(tree);
 	}
 });
