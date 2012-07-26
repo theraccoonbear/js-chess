@@ -11,10 +11,12 @@ var DeepThinkAI = BasicAgent.extend({
 		DeepThinkAI.super.constructor.call(this, color);
 		this.agentName = "DeepThinkAI";
 		this.callDepth = 0;
+		this.positionsEvaluated = 0;
 	},
 	scoreBoard: function(board) {
 		var white = 0;
 		var black = 0;
+		var ret_val = 0;
 		
 		for (var x = 0; x <= 7; x++) {
 			for (var y = 0; y <= 7; y++) {
@@ -29,7 +31,15 @@ var DeepThinkAI = BasicAgent.extend({
 			} // for (y)
 		} // for (x)
 		
-		return this.color == 'white' ? white - black : black - white;
+		ret_val = this.color == 'white' ? white - black : black - white;
+		
+		if (ret_val != 0) {
+			console.log('SCORE: ' + ret_val);
+			console.log(board);
+			console.log('-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=');
+		}
+		
+		return ret_val;
 	},
 	getAllMyMoves: function(board) {
 		var moves = [];
@@ -75,6 +85,8 @@ var DeepThinkAI = BasicAgent.extend({
 					ey: m[1]
 				};
 				
+				this.positionsEvaluated++;
+				
 				var new_board = this.game.testMove(board, piece.x, piece.y, m[0], m[1]);
 				
 				if (this.callDepth < 2) {
@@ -100,8 +112,11 @@ var DeepThinkAI = BasicAgent.extend({
 		var board = game.board;
 		var my_pieces = [];
 		var ctxt = this;
+		this.positionsEvaluated = 0;
 			
 		var tree = this.buildEvalTree(board);
+		
+		console.log('Positions Evaluated: ' + this.positionsEvaluated);
 		
 		console.log(tree);
 	}
