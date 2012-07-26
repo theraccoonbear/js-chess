@@ -134,7 +134,7 @@ var DeepThinkAI = CostBenefitAI.extend({
 		} else {
 			var tree = this.buildEvalTree(board);
 			console.log('Positions Evaluated: ' + this.positionsEvaluated);
-			console.log(tree);
+			//console.log(tree);
 			var hs = 0;
 			var hs_move = null;
 			
