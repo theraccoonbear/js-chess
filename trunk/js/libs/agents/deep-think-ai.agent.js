@@ -137,10 +137,10 @@ var DeepThinkAI = CostBenefitAI.extend({
 			console.log(tree);
 			var hs = 0;
 			var hs_move = {
-				sx: 0,
-				sy: 0,
-				ex: 0,
-				ey: 0
+				sx: null,
+				sy: null,
+				ex: null,
+				ey: null
 			};
 			
 			for (var i = 0; i < tree.future.length; i++) {
