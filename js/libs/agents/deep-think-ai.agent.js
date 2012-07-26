@@ -7,6 +7,7 @@ var DeepThinkAI = CostBenefitAI.extend({
 		'knight': 10,
 		'pawn': 2
 	},
+	maxDepth: 2,
 	constructor: function(color) {
 		DeepThinkAI.super.constructor.call(this, color);
 		this.agentName = "DeepThinkAI";
@@ -90,7 +91,7 @@ var DeepThinkAI = CostBenefitAI.extend({
 				
 				var new_board = this.game.testMove(board, piece.x, piece.y, m[0], m[1]);
 				
-				if (this.callDepth < 2) {
+				if (this.callDepth < this.maxDepth) {
 					var new_state = {
 						move: a_move,
 						state: this.buildEvalTree(new_board)
@@ -101,6 +102,17 @@ var DeepThinkAI = CostBenefitAI.extend({
 				
 			} // for all moves
 		} // for all piecesmoves
+		
+		
+		if (this.callDepth < this.maxDepth) {
+			// Get the average
+			var sum = 0;
+			for (var i = 0; i <= moveTree.future.length; i++) {
+				var mt = moveTree.future[i].state;
+				sum += mt.score;
+			}
+			moveTree.score = sum / moveTree.future.length;
+		}
 		
 		this.callDepth--;
 		
