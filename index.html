@@ -404,7 +404,7 @@ getMove: function(game) {
 			if (winner == 'draw') {
 				msg = 'Draw';	
 			} else {
-				msg = 'Player ' + (winner == 'white' ? '2, ' + p1.agentName : '1, ' + p2.agentName) + ' (' + winner + ') wins';
+				msg = 'Player ' + (winner == 'white' ? '1, ' + p1.agentName : '2, ' + p2.agentName) + ' (' + winner + ') wins';
 			}
 			
 			if (console) { console.log(msg); }
