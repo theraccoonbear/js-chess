@@ -44,6 +44,8 @@ var DeepThinkAI = BasicAgent.extend({
 				moves.push(m_obj);
 			}
 		});
+		
+		return moves;
 	},
 	buildEvalTree: function(board) {
 		this.callDepth++;
