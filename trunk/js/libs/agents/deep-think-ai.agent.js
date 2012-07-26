@@ -7,7 +7,7 @@ var DeepThinkAI = CostBenefitAI.extend({
 		'knight': 10,
 		'pawn': 2
 	},
-	maxDepth: 2,
+	maxDepth: 3,
 	constructor: function(color) {
 		DeepThinkAI.super.constructor.call(this, color);
 		this.agentName = "DeepThinkAI";
@@ -133,8 +133,7 @@ var DeepThinkAI = CostBenefitAI.extend({
 			DeepThinkAI.super.getMove.call(this, game);
 		} else {
 			var tree = this.buildEvalTree(board);
-			console.log('Positions Evaluated: ' + this.positionsEvaluated);
-			//console.log(tree);
+			console.log(this.color + ' Positions Evaluated: ' + this.positionsEvaluated);
 			var hs = 0;
 			var hs_move = null;
 			
