@@ -16,7 +16,7 @@ class Chess {
 	);
 	
 	var $opts = array(
-										
+	
 	);
 	
 	var $player1 = null;
@@ -85,21 +85,21 @@ class Chess {
 			$this->addPiece(Piece::Black, Piece::Pawn, $x, 1);
 		}
 		$this->addPiece(Piece::White, Piece::Rook, 0, 7);
-    $this->addPiece(Piece::White, Piece::Rook, 7, 7);
-    $this->addPiece(Piece::White, Piece::Knight, 1, 7);
-    $this->addPiece(Piece::White, Piece::Knight, 6, 7);
-    $this->addPiece(Piece::White, Piece::Bishop, 2, 7);
-    $this->addPiece(Piece::White, Piece::Bishop, 5, 7);
-    $this->addPiece(Piece::White, Piece::Queen, 3, 7);
-    $this->addPiece(Piece::White, Piece::King, 4, 7);
-    $this->addPiece(Piece::Black, Piece::Rook, 0, 0);
-    $this->addPiece(Piece::Black, Piece::Rook, 7, 0);
-    $this->addPiece(Piece::Black, Piece::Knight, 1, 0);
-    $this->addPiece(Piece::Black, Piece::Knight, 6, 0);
-    $this->addPiece(Piece::Black, Piece::Bishop, 2, 0);
-    $this->addPiece(Piece::Black, Piece::Bishop, 5, 0);
+		$this->addPiece(Piece::White, Piece::Rook, 7, 7);
+		$this->addPiece(Piece::White, Piece::Knight, 1, 7);
+		$this->addPiece(Piece::White, Piece::Knight, 6, 7);
+		$this->addPiece(Piece::White, Piece::Bishop, 2, 7);
+		$this->addPiece(Piece::White, Piece::Bishop, 5, 7);
+		$this->addPiece(Piece::White, Piece::Queen, 3, 7);
+		$this->addPiece(Piece::White, Piece::King, 4, 7);
+		$this->addPiece(Piece::Black, Piece::Rook, 0, 0);
+		$this->addPiece(Piece::Black, Piece::Rook, 7, 0);
+		$this->addPiece(Piece::Black, Piece::Knight, 1, 0);
+		$this->addPiece(Piece::Black, Piece::Knight, 6, 0);
+		$this->addPiece(Piece::Black, Piece::Bishop, 2, 0);
+		$this->addPiece(Piece::Black, Piece::Bishop, 5, 0);
 		$this->addPiece(Piece::Black, Piece::King, 4, 0);
-    $this->addPiece(Piece::Black, Piece::Queen, 3, 0);
+		$this->addPiece(Piece::Black, Piece::Queen, 3, 0);
 	} // setupBoard()
 	
 	function toString() {
