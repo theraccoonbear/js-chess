@@ -1,6 +1,7 @@
 <?php
 
 include_once('chess.php');
+include_once('chess.agents.php');
 
 $game = new Chess('1', '2');
 
