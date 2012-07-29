@@ -6,6 +6,13 @@ class Move {
 	var $ex;
 	var $ey;
 	
+	static function CreatePosition($x, $y) {
+		$p = new stdClass();
+		$p->x = $x;
+		$p->y = $y;
+		return $p;
+	} // static CreatePosition()
+	
 	function __construct($x1, $y1, $x2, $y2) {
 		$this->sx = $x1;
 		$this->sy = $y1;
@@ -102,6 +109,7 @@ class Piece {
 	const White = 100;
 	const Black = 101;
 	
+	const Any = 9999;
 	
 	
 	var $color;
@@ -166,6 +174,11 @@ class Piece {
 		}
 	} // position()
 	
+	function pos($pos) {
+		$files = array('A','B','C','D','E','F','G','H');
+		return $files[$pos->x] . (8 - $pos->y);
+	} // pos()
+	
 	function toString($fmt = 'short') {
 		if ($fmt == 'long') {
 		  return ($this->color == Piece::White ? 'white' : 'black') . ' ' . $this->lrep . ' @ ' . $this->position();
@@ -209,6 +222,11 @@ class Pawn extends Piece {
 
 		return $valid;
 	} // moves()
+	
+	function openToEnPassant($state) {
+		$s = $state == true ? true : false;
+		$this->enPassantAttackable = $s;
+	}
 } // Pawn
 
 class Rook extends Piece {
