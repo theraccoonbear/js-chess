@@ -170,6 +170,53 @@ class Chess {
 		$this->addPiece(Piece::Black, Piece::Queen, 3, 0);
 	} // setupBoard()
 	
+	function createScenario($board) {
+		$this->board = array(
+			array(null,null,null,null,null,null,null,null),
+			array(null,null,null,null,null,null,null,null),
+			array(null,null,null,null,null,null,null,null),
+			array(null,null,null,null,null,null,null,null),
+			array(null,null,null,null,null,null,null,null),
+			array(null,null,null,null,null,null,null,null),
+			array(null,null,null,null,null,null,null,null),
+			array(null,null,null,null,null,null,null,null)
+		);
+		
+		for ($x = 0; $x <= 7; $x++) {
+			for ($y = 0; $y <= 7; $y++) {
+				$p = $board[$x][$y];
+				if ($p != null) {
+					$p = strtolower($p);
+					$color = substr($p, 0, 1) == 'w' ? Piece::White : Piece::Black;
+					$type_rep = substr($p, 1, 0);
+					$type = Piece::Pawn;
+					switch ($type_rep) {
+						case 'q':
+							$type = Piece::Queen;
+							break;
+						case 'k':
+							$type = Piece::King;
+							break;
+						case 'r':
+							$type = Piece::Rook;
+							break;
+						case 'b':
+							$type = Piece::Bishop;
+							break;
+						case 'n':
+							$type = Piece::Knight;
+							break;
+						default:
+							$type = Piece::Pawn;
+							break;
+					}
+					
+					$this->addPiece($color, $type, $y, $x);
+				}
+			}
+		}
+	} // createScenario()
+	
 	function cacheValue($name, $value) {
 		$this->cache[$name] = $value;
 	} // cacheValue()
