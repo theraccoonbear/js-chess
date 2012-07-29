@@ -1,8 +1,8 @@
 <?php
 
-include_once('chess.agent.php');
+include_once('basic.agent.php');
 
-class HumanAgent extends ChessAgent {
+class HumanAgent extends BasicAgent {
   
 	function __construct($color, $name = 'Human Agent') {
 		parent::__construct($color, $name);

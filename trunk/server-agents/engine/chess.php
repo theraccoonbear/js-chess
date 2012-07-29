@@ -21,6 +21,16 @@ class Chess {
 	
 	var $player1 = null;
 	var $player2 = null;
+	var $active = 1;
+	var $history = array();
+	var $enPassantTarget = null;
+	var $gameLog = array();
+	var $moveRequestedAt = 0;
+	var $moveCount = 0;
+	var $movesSinceCapture = 0;
+	var $gameActive = false;
+	var $result = null;
+	var $cache = array();
 	
 	function __construct($player1, $player2, $options = array()) {
 		$this->opts = $options + $this->opts;
@@ -29,16 +39,74 @@ class Chess {
 		$this->init();
 	} // __construct()
 	
+	function logMove($x1, $y1, $x2, $y2, $notation, $elapsed, $turn) {
+		$l_obj = new stdClass();
+		$l_obj->move = new Move($x1, $y1, $x2, $y2);
+		$l_obj->notation = $notation;
+		$l_obj->elapsed = $elapsed;
+		$l_obj->turn = $turn;
+		
+		array_push($this->gameLog, $l_obj);
+	} // logMove();
+	
 	function init() {
+		$this->enPassantTarget = null;
+		$this->moveRequestedAt = 0;
+		$this->history = array();
+		$this->gameLog = array();
+		$this->moveCount = 0;
+		$this->movesSinceCapture = 0;
+		$this->active = 1;
+		$this->gameActive = false;
+		$this->cache = array();
+		
 		$this->setupBoard();
 	} // init()
 	
-	function createPiece($c, $t, $x, $y) {
+	function start() {
+		$this->gameActive = true;
+		while ($this->gameActive) {
+			$this->nextMove();
+			print "\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n\n";
+			print $this->toString();
+		}
+		
+		return $this->result;
+	} // start();
+	
+	function gameOver($res) {
+		$this->result = $res;
+		$this->gameActive = false;
+	} // gameOver();
+	
+	function nextMove() {
+		$move = null;
+		
+		$this->moveRequestedAt = microtime();
+		if ($this->active == 1) {
+			$move = $this->player1->getMove($this);
+		} else {
+			$move = $this->player2->getMove($this);
+		}
+		
+		$this->move($move);
+		
+		$mv_idx = count($this->gameLog) - 1;
+		if ($mv_idx >= 0) {
+			$last_log = $this->gameLog[$mv_idx];
+			print $last_log->notation . "\n";
+		}
+		
+		$this->active = $this->active == 1 ? 2 : 1;
+	} // nextMove();
+	
+	function createPiece($c, $t, $x, $y, $options = array()) {
 		$newPiece = null;
 		
 		switch ($t) {
 			case Piece::Pawn:
-				$newPiece = new Pawn($c, $x, $y);
+				$epa = isset($options['epa']) && $options['epa'] === true ? true : false;
+				$newPiece = new Pawn($c, $x, $y, $epa);
 				break;
 			case Piece::Rook:
 				$newPiece = new Rook($c, $x, $y);
@@ -102,22 +170,75 @@ class Chess {
 		$this->addPiece(Piece::Black, Piece::Queen, 3, 0);
 	} // setupBoard()
 	
-	function toString() {
-		$horiz = "+----+----+----+----+----+----+----+----+";
-		
-		for ($y = 0; $y <= 7; $y++) {
-			print "$horiz\n|";
-			for ($x = 0; $x <= 7; $x++) {
-			  $p = $this->board[$x][$y];
-				if ($p == null) {
-					print  '    |';
-				} else {
-					print ' ' . $p->toString() . ' |';
-				}
-			}
-			print "\n";
+	function cacheValue($name, $value) {
+		$this->cache[$name] = $value;
+	} // cacheValue()
+	
+	function getCachedValue($name) {
+		if (isset($this->cache[$name])) {
+			return $this->cache[$name];
+		} else {
+			return false;
 		}
-		print "$horiz\n";
+	} // getCachedValue()
+	
+	function expireCache($name) {
+		unset($this->cache[$name]);
+	} // unset()
+	
+	function toString($btu = false) {
+		$btu = $btu === false ? $this->board : $btu;
+		
+		$brd_cache = $this->getCachedValue('board-string');
+		if ($brd_cache === false) {
+			$horiz = "---+----+----+----+----+----+----+----+----+";
+			$brd_cache = '';
+			$brd_cache .= "   |  A |  B |  C |  D |  E |  F |  G |  H |";
+			$brd_cache .= '  ';
+			$brd_cache .= "   |  A |  B |  C |  D |  E |  F |  G |  H |\n";
+			$threats = $this->checkThreats($btu);
+			
+			
+			
+			for ($y = 0; $y <= 7; $y++) {
+				$rvs = array('','');
+				
+				$brd_cache .= "$horiz";
+				$brd_cache .= "  $horiz\n";
+				
+				$rvs[0] .= ' '  . (8 - $y) . " |";
+				
+				$rvs[1] .= ' ' . (8 - $y) . " |";
+				
+				for ($x = 0; $x <= 7; $x++) {
+					$p = $btu[$x][$y];
+					if ($p == null) {
+						$rvs[0] .= '    |';
+					} else {
+						$rvs[0].= ' ' . $p->toString() . ' |';
+					}
+					
+					$th = $threats[$x][$y];
+					if ($th == false) {
+						$rvs[1] .= '    |';
+					} else {
+						$rvs[1] .= '  X |';
+					}
+					
+				}
+				
+				$brd_cache .= join('  ', $rvs);
+				
+				$brd_cache .= "\n";
+			}
+			
+			
+			$brd_cache .= "$horiz  $horiz";
+			$brd_cache .= "\n";
+			$this->cacheValue('board-string', $brd_cache);
+		}
+			
+		print $brd_cache;
 	} // toString()
 	
 	function iob($board, $action, $params) {
@@ -147,7 +268,14 @@ class Chess {
 			for ($y = 0; $y <= 7; $y++) {
 				$p = $board[$x][$y];
 				if ($p != null) {
+					//$epa = $p->type == Piece::Pawn ? $p->enPassantAttackable : false;
+					
 					$np = $this->createPiece($p->color, $p->type, $p->x, $p->y);
+					
+					if ($p->type == Piece::Pawn) {
+						$np->openToEnPassant($p->enPassantAttackable);
+					}
+					
 					$new_board[$x][$y] = $np;
 				}
 			}
@@ -155,7 +283,10 @@ class Chess {
 		return $new_board;
 	} // boardCopy()
 	
-	function checkThreats($board) {
+	function checkThreats($board = false) {
+		
+		$board = $board === false ? $this->board : $board;
+		
 		$threatBoard = array(
 			array(false,false,false,false,false,false,false,false),
 			array(false,false,false,false,false,false,false,false),
@@ -292,6 +423,183 @@ class Chess {
 		}
 		return $nret_val;
 	} // movesFor()
+	
+	function clearEnPassantTarget() {
+		if ($this->enPassantTarget != null) {
+			$this->enPassantTarget->openToEnPassant(false);
+		}
+		$this->enPassantTarget = null;
+	} // clearEnPassantTarget()
+	
+	function setEnPassantTarget($piece) {
+		$piece->openToEnPassant(true);
+		$this->enPassantTarget = $piece;
+	} // setEnPassantTarget()
+	
+	function boardChanged() {
+		$this->expireCache('board-cache');
+		$this->expireCache('threat-cache');
+	}
+	
+	function move($m_obj) { // $x1, $y1, $x2, $y2) {
+		$x1 = $m_obj->sx;
+		$y1 = $m_obj->sy;
+		$x2 = $m_obj->ex;
+		$y2 = $m_obj->ey;
+		
+		//print_r($m_obj);
+		
+		$p_obj = $this->board[$x1][$y1];
+		$d_obj = $this->board[$x2][$y2];
+		
+		
+		
+		if ($p_obj == null) {
+			return false;
+		}
+		
+		$this->expireCache('board-string');
+		
+		$this->boardChanged();
+		
+		$elapsed = microtime() - $this->moveRequestedAt;
+		
+		$turn = $p_obj->color;
+		
+		$notation = '' . $p_obj->rep . $p_obj->position();
+		
+		if ($d_obj == null) {
+			
+			if ($p_obj->type == Piece::Pawn &&  $x1 != $x2) {
+				
+				$cpx = $x2;
+				$cpy = ($p_obj->color == Piece::White) ? $y2 + 1 : $y2 - 1;
+				$d_obj = $this->board[$cpx][$cpy];
+				if ($d_obj->type == Piece::Pawn && $d_obj->enPassantAttackable) {
+					$notation .= 'x' . $d_obj->position() + '(ep)';
+					$this->movesSinceCapture++;
+					$this->board[$cpx][$cpy] = null;
+				}
+			} else {
+				$t_pos = Move::createPosition($x2, $y2);
+				$notation .= '-' . $p_obj->pos($t_pos);
+				$this->movesSinceCapture++;
+			}
+		} else {
+			$notation .= 'x' . $d_obj->position();
+			$this->movesSinceCapture = 0;
+		}
+		
+		array_push($this->history, $this->boardCopy($this->board));
+		
+		$this->board[$x1][$y1] = null;
+		$p_obj->x = $x2;
+		$p_obj->y = $y2;
+		$p_obj->unmoved = false;
+		$this->board[$x2][$y2] = $p_obj;
+		$this->moves++;
+		
+		$this->clearEnPassantTarget();
+		
+		if ($p_obj->type == Piece::Pawn) {
+			if (($p_obj->color == Piece::Black && $p_obj->y == 7) || ($p_obj->color == Piece::White && $p_obj->y == 0)) {
+				$this->addPiece($p_obj->color, Piece::Queen, $p_obj->x, $p_obj->y);
+			} else if (($p_obj->color == Piece::Black && $y2 == 3) || ($p_obj->color == Piece::White && $y2 == 4)) {
+				$this->setEnPassantTarget($p_obj);
+			}
+		} else if ($p_obj->type == Piece::King && abs($x1 - $x2) == 2) {
+			$y = $p_obj->color == Piece::White ? 7 : 0;
+			
+			$rsx = null;
+			$rex = null;
+			
+			if ($x1 > $x2) { // queen side
+				$rsx = 0;
+				$rex = 3;
+				$notation = 'O-O-O';
+			} else {
+				$rsx = 7;
+				$rex = 5;
+				$notation = 'O-O';
+			}
+			
+			$rook = $this->board[rsx][y];
+			$rook->x = $rex;
+			$rook->y = $y;
+			$this->board[$rsx][$y] = null;
+			$this->board[$rex][$y] = $rook;
+		}
+		
+		$this->logMove($x1, $y1, $x2, $y2, $notation, $elapsed, $turn);
+		
+		$this->moveCount = $d_obj != null ? 0 : $this->moveCount + 1;
+		
+		$threat_board = $this->checkThreats();
+		
+		if ($this->movesSinceCapture > 100) {
+			$this->gameOver('draw');
+		} else if ($d_obj != null && $d_obj->type == Piece::King) { 
+			$winner = $d_obj->color == Piece::White ? Piece::Black : Piece::White;
+			$this->gameOver($winner);
+		} else {
+			$w_king = $this->find(Piece::White, Piece::King);
+			$b_king = $this->find(Piece::Black, Piece::King);
+			
+			$w_king = $w_king[0];
+			$b_king = $b_king[0];
+			
+			$w_king_moves = $this->movesFor($w_king->x, $w_king->y);
+			$b_king_moves = $this->movesFor($b_king->x, $b_king->y);
+			
+			if ($threat_board[$w_king->x][$w_king->y] == true && count($w_king_moves->move) < 1 && count($w_king_moves->capture) < 1) {
+				$this->gameOver(Piece::Black);
+			} else if ($threat_board[$b_king->x][$b_king->y] == true && count($b_king_moves->move) < 1 && count($b_king_moves->capture) < 1) {
+				$this->gameOver(Piece::White);
+			}
+			
+		}
+		
+		return $d_obj;
+	} // move()
+	
+	function find($color = Piece::Any, $type = Piece::Any, $altBoard = false) {
+		$btu = $altBoard === false ? $this->board : $altBoard;
+		
+		$matches = array();
+		
+		for ($x = 0; $x <= 7; $x++) {
+			for ($y = 0; $y <= 7; $y++) {
+				$p = $btu[$x][$y];
+				if ($p != null) {
+					$include = true;
+					
+					
+					if ($color != Piece::Any) {
+						$include = $include && $p->color == $color;
+					}
+					
+					if ($type != Piece::Any) {
+						$include = $include && $p->type == $type;
+					}
+					
+					if ($include) {
+						array_push($matches, $p);
+					}
+				}
+			}
+		}
+		
+		return $matches;		
+	} // find()
+	
+	function findFirst($color = Piece::Any, $type = Piece::Any, $altBoard = false) {
+		$ret_val = $this->find($color, $type, $altBoard);
+		if (count($ret_val) > 0) {
+			return $ret_val[0];
+		} else {
+			return null;
+		}
+	} // findFirst()
 } // Chess
 
 ?>
