@@ -23,6 +23,10 @@ class RandomAI extends BasicAgent {
                 }
             }
         }
+	
+	if (count($my_pieces) < 1) {
+	    return 'resign';
+	}
 
 	$the_move = new Move(null, null, null, null);
                 
@@ -32,25 +36,28 @@ class RandomAI extends BasicAgent {
         $to_play = $this->atRandom($my_pieces);
         $now = time();
         while (!$ready && $safety_cnt < 10000) {//&& // $now - $start < 1000) { // ready or 1 second without a decision
-            $safety_cnt++;
-            $the_move->sx = $to_play->x;
-            $the_move->sy = $to_play->y;
-            
-            $moves = $game->movesFor($to_play->x, $to_play->y);
-            if (count($moves->capture) > 0) {
-                $m = $this->atRandom($moves->capture);
-                $the_move->ex = $m->ex;
-                $the_move->ey = $m->ey;
-                $ready = true;
-            } else if (count($moves->move) > 0) {
-                $m = $this->atRandom($moves->move);
-                $the_move->ex = $m->ex;
-                $the_move->ey = $m->ey;
-                $ready = true;
-            } else {
-                $to_play = $this->atRandom($my_pieces);
-            }
-            $now = microtime();
+	    if ($to_play != null) {
+		$the_move->sx = $to_play->x;
+		$the_move->sy = $to_play->y;
+		
+		$moves = $game->movesFor($to_play->x, $to_play->y);
+		if (count($moves->capture) > 0) {
+		    $m = $this->atRandom($moves->capture);
+		    $the_move->ex = $m->ex;
+		    $the_move->ey = $m->ey;
+		    $ready = true;
+		} else if (count($moves->move) > 0) {
+		    $m = $this->atRandom($moves->move);
+		    $the_move->ex = $m->ex;
+		    $the_move->ey = $m->ey;
+		    $ready = true;
+		} else {
+		    $to_play = $this->atRandom($my_pieces);
+		}
+		
+	    }
+	    
+	    $now = microtime();
 	    $safety_cnt++;
         }
         

@@ -89,12 +89,17 @@ class Chess {
 			$move = $this->player2->getMove($this);
 		}
 		
+		if ($move == 'resign') {
+			$this->gameOver($this->active == 1 ? Piece::Black : Piece::White);
+			return;
+		}
+		
 		$this->move($move);
 		
 		$mv_idx = count($this->gameLog) - 1;
 		if ($mv_idx >= 0) {
 			$last_log = $this->gameLog[$mv_idx];
-			print $last_log->notation . "\n";
+			print ($this->active == 1 ? 'White ' : 'Black ') .$last_log->notation . "\n";
 		}
 		
 		$this->active = $this->active == 1 ? 2 : 1;
@@ -188,7 +193,7 @@ class Chess {
 				if ($p != null) {
 					$p = strtolower($p);
 					$color = substr($p, 0, 1) == 'w' ? Piece::White : Piece::Black;
-					$type_rep = substr($p, 1, 0);
+					$type_rep = substr($p, 1, 1);
 					$type = Piece::Pawn;
 					switch ($type_rep) {
 						case 'q':
@@ -300,8 +305,10 @@ class Chess {
 		$new_board = $this->boardCopy($board);
 		
 		$p1 = $new_board[$x1][$y1];
-		$p1->x = $x2;
-		$p1->y = $y2;
+		//$p1->x = $x2;
+		//$p1->y = $y2;
+		//$p1->unmoved = false;
+		$p1->move($x2, $y2);
 		$new_board[$x2][$y2] = $p1;
 		$new_board[$x1][$y1] = null;
 		
@@ -322,6 +329,7 @@ class Chess {
 					if ($p->type == Piece::Pawn) {
 						$np->openToEnPassant($p->enPassantAttackable);
 					}
+					$np->unmoved = $p->unmoved;
 					
 					$new_board[$x][$y] = $np;
 				}
@@ -381,7 +389,8 @@ class Chess {
 			
 			for ($i = 0; $i < count($ret_val->move); $i++) {
 				$m = $ret_val->move[$i];
-				if ($m->ex >= 0 && $m->ex <= 7 && $m->ey >= 0 && $m->ey <= 7) {
+				//if ($m->ex >= 0 && $m->ex <= 7 && $m->ey >= 0 && $m->ey <= 7) {
+				if ($m->validBounds()) {
 					if ($btu[$m->ex][$m->ey] == null) {
 						array_push($nret_val->move, $m);
 					}
@@ -390,7 +399,8 @@ class Chess {
 			
 			for ($i = 0; $i < count($ret_val->capture); $i++) {
 				$m = $ret_val->capture[$i];
-				if ($m->ex >= 0 && $m->ex <= 7 && $m->ey >= 0 && $m->ey <= 7) {
+				//if ($m->ex >= 0 && $m->ex <= 7 && $m->ey >= 0 && $m->ey <= 7) {
+				if ($m->validBounds()) {
 					$tar_piece = $btu[$m->ex][$m->ey];
 					
 					if ($tar_piece != null && $tar_piece->color != $piece->color) {
@@ -410,17 +420,25 @@ class Chess {
 				$king_pos->x =  null;
 				$king_pos->y =  null;
 				$king_found = false;
-			
-				for ($ix = 0; $ix < 7; $ix++) {
-					for ($iy = 0; $iy < 7; $iy++) {
-						$p = $btu[$ix][$iy];
-						if ($p != null && $p->color == $piece->color && $p->type == Piece::King) {
-							$king_found = true;
-							$king_pos->x = $ix;
-							$king_pos->y = $iy;
-						}
-					}
+				
+				$king = $this->find($piece->color, Piece::King);
+				if (count($king) > 0) {
+					$king = $king[0];
+					$king_found = true;
+					$king_pos->x = $king->x;
+					$king_pos->y = $king->y;
 				}
+			
+				//for ($ix = 0; $ix < 7; $ix++) {
+				//	for ($iy = 0; $iy < 7; $iy++) {
+				//		$p = $btu[$ix][$iy];
+				//		if ($p != null && $p->color == $piece->color && $p->type == Piece::King) {
+				//			$king_found = true;
+				//			$king_pos->x = $ix;
+				//			$king_pos->y = $iy;
+				//		}
+				//	}
+				//}
 				
 				if ($king_found) {
 					$cur_threats = $this->checkThreats($btu);

@@ -17,7 +17,11 @@ class BasicAgent {
 	
 	function atRandom($ar) {
 		$idx = floor(rand(0, count($ar) - 1));
-		return $ar[$idx];
+		if (isset($ar[$idx])) {
+			return $ar[$idx];
+		} else {
+			return null;
+		}
 	} // atRandom()
 	
 }

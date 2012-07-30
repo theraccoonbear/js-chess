@@ -8,17 +8,30 @@ class Move {
 	
 	static function CreatePosition($x, $y) {
 		$p = new stdClass();
+		
+		//if ($x > 7 || $x < 0 || $y > 7 || $y < 0) {
+		//	throw new Exception("Out of bounds coordinate in Move::CreatePosition");
+		//}
 		$p->x = $x;
 		$p->y = $y;
 		return $p;
 	} // static CreatePosition()
 	
 	function __construct($x1, $y1, $x2, $y2) {
+		
+		//if ($x1 > 7 || $x1 < 0 || $y1 > 7 || $y1 < 0 || $x2 > 7 || $x2 < 0 || $y2 > 7 || $y2 < 0) {
+		//	throw new Exception("Out of bounds coordinate in new Move($x1, $y1, $x2, $y2)");
+		//}
+		
 		$this->sx = $x1;
 		$this->sy = $y1;
 		$this->ex = $x2;
 		$this->ey = $y2;
 	} // __construct()
+	
+	function validBounds() {
+		return !($this->sx > 7 || $this->sx < 0 || $this->sy > 7 || $this->sy < 0 || $this->ex > 7 || $this->ex < 0 || $this->ey > 7 || $this->ey < 0);
+	} // validBounds()
 	
 	static function orthMoves($sx, $sy, $board) {
 		$piece = $board[$sx][$sy];
