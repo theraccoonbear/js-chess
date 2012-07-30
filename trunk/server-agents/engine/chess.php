@@ -324,12 +324,12 @@ class Chess {
 				if ($p != null) {
 					//$epa = $p->type == Piece::Pawn ? $p->enPassantAttackable : false;
 					
-					$np = $this->createPiece($p->color, $p->type, $p->x, $p->y);
+					$np = $p->clonePiece(); //$this->createPiece($p->color, $p->type, $p->x, $p->y);
 					
-					if ($p->type == Piece::Pawn) {
-						$np->openToEnPassant($p->enPassantAttackable);
-					}
-					$np->unmoved = $p->unmoved;
+					//if ($p->type == Piece::Pawn) {
+					//	$np->openToEnPassant($p->enPassantAttackable);
+					//}
+					//$np->unmoved = $p->unmoved;
 					
 					$new_board[$x][$y] = $np;
 				}
