@@ -322,6 +322,7 @@ class Chess {
 			for ($y = 0; $y <= 7; $y++) {
 				$p = $board[$x][$y];
 				if ($p != null) {
+					
 					//$epa = $p->type == Piece::Pawn ? $p->enPassantAttackable : false;
 					
 					$np = $p->clonePiece(); //$this->createPiece($p->color, $p->type, $p->x, $p->y);
