@@ -18,11 +18,6 @@ class Move {
 	} // static CreatePosition()
 	
 	function __construct($x1, $y1, $x2, $y2) {
-		
-		//if ($x1 > 7 || $x1 < 0 || $y1 > 7 || $y1 < 0 || $x2 > 7 || $x2 < 0 || $y2 > 7 || $y2 < 0) {
-		//	throw new Exception("Out of bounds coordinate in new Move($x1, $y1, $x2, $y2)");
-		//}
-		
 		$this->sx = $x1;
 		$this->sy = $y1;
 		$this->ex = $x2;
