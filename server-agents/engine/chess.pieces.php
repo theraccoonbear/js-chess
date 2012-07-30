@@ -198,7 +198,42 @@ class Piece {
 		} else {
 			return ($this->color == Piece::White ? 'W' : 'B') . $this->rep;
 		}
-	}
+	} // toString()
+	 
+	function clonePiece() {
+		$np = null;
+		
+		switch ($this->type) {
+			case Piece::Pawn:
+				$np = new Pawn($this->color, $this->x, $this->y, $this->enPassantAttackable);
+				break;
+			case Piece::Rook:
+				$np = new Pawn($this->color, $this->x, $this->y);
+				break;
+			case Piece::Knight:
+				$np = new Pawn($this->color, $this->x, $this->y);
+				break;
+			case Piece::Bishop:
+				$np = new Pawn($this->color, $this->x, $this->y);
+				break;
+			case Piece::Queen:
+				$np = new Pawn($this->color, $this->x, $this->y);
+				break;
+			case Piece::King:
+				$np = new Pawn($this->color, $this->x, $this->y);
+				break;
+			default:
+				$np = new Pawn($this->color, $this->x, $this->y, $this->enPassantAttackable);
+				break;
+		} // switch
+		
+		$np->unmoved = $this->unmoved;
+		$np->init_x = $this->init_x;
+		$np->init_y = $this->init_y;
+		
+		return $np;
+	} // clone()
+	
 } // Piece
 
 class Pawn extends Piece {
