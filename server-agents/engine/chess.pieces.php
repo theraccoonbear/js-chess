@@ -107,15 +107,15 @@ class Move {
 
 
 class Piece {
-	const Pawn = 1;
-	const Rook = 2;
-	const Knight = 3;
-	const Bishop = 4;
-	const Queen = 5;
-	const King = 6;
+	const Pawn = 'PAWN';
+	const Rook = 'ROOK';
+	const Knight = 'KNIGHT';
+	const Bishop = 'BISHOP';
+	const Queen = 'QUEEN';
+	const King = 'KING';
 	
-	const White = 100;
-	const Black = 101;
+	const White = 'WHITE';
+	const Black = 'BLACK';
 	
 	const Any = 9999;
 	
@@ -203,19 +203,19 @@ class Piece {
 				$np = new Pawn($this->color, $this->x, $this->y, $this->enPassantAttackable);
 				break;
 			case Piece::Rook:
-				$np = new Pawn($this->color, $this->x, $this->y);
+				$np = new Rook($this->color, $this->x, $this->y);
 				break;
 			case Piece::Knight:
-				$np = new Pawn($this->color, $this->x, $this->y);
+				$np = new Knight($this->color, $this->x, $this->y);
 				break;
 			case Piece::Bishop:
-				$np = new Pawn($this->color, $this->x, $this->y);
+				$np = new Bishop($this->color, $this->x, $this->y);
 				break;
 			case Piece::Queen:
-				$np = new Pawn($this->color, $this->x, $this->y);
+				$np = new Queen($this->color, $this->x, $this->y);
 				break;
 			case Piece::King:
-				$np = new Pawn($this->color, $this->x, $this->y);
+				$np = new King($this->color, $this->x, $this->y);
 				break;
 			default:
 				$np = new Pawn($this->color, $this->x, $this->y, $this->enPassantAttackable);
